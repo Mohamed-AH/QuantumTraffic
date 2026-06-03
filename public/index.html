@@ -27,41 +27,51 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-blue-500 selection:text-white overflow-y-auto lg:overflow-hidden">
 
-    <!-- Onboarding Quick Start Overlay -->
+    <!-- Help Modal (Onboarding + re-trigger) -->
     <div id="introOverlay" class="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-6">
         <div class="bg-slate-900 border border-slate-700 rounded-2xl p-8 max-w-lg w-full shadow-2xl">
-            <div class="flex items-center space-x-4 mb-6">
-                <div class="h-12 w-12 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shrink-0 shadow-lg shadow-blue-500/20">
-                    <i data-lucide="cpu" class="text-white h-7 w-7"></i>
-                </div>
-                <div>
-                    <h2 class="font-bold text-xl text-slate-100">Welcome to Quantum Traffic Control</h2>
-                    <p class="text-slate-400 text-sm mt-0.5">A 30-second intro before you dive in</p>
-                </div>
+
+            <!-- Header -->
+            <div class="mb-6">
+                <h2 class="font-bold text-xl text-slate-100 mb-2">What is this?</h2>
+                <p class="text-slate-400 text-sm leading-relaxed">This is a traffic optimization tool that uses quantum-inspired physics to solve complex routing problems. You are building networks that maximize throughput while respecting physical constraints.</p>
             </div>
 
-            <ul class="space-y-4 mb-8">
-                <li class="flex items-start space-x-3">
-                    <span class="mt-1 h-5 w-5 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center shrink-0">
-                        <span class="h-2 w-2 rounded-full bg-blue-400"></span>
-                    </span>
-                    <p class="text-slate-300 text-sm leading-relaxed"><strong class="text-slate-100">Nodes = Intersections</strong> that want a green light. Place them by clicking the grid.</p>
-                </li>
-                <li class="flex items-start space-x-3">
-                    <span class="mt-1 h-5 w-5 rounded-full bg-rose-500/20 border border-rose-500/40 flex items-center justify-center shrink-0">
-                        <span class="h-2 w-2 rounded-full bg-rose-400"></span>
-                    </span>
-                    <p class="text-slate-300 text-sm leading-relaxed"><strong class="text-slate-100">Conflict Lines = Roads</strong> connecting adjacent intersections — they can't both be green at once or traffic crashes.</p>
-                </li>
-                <li class="flex items-start space-x-3">
-                    <span class="mt-1 h-5 w-5 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0">
-                        <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
-                    </span>
-                    <p class="text-slate-300 text-sm leading-relaxed"><strong class="text-slate-100">Rydberg Blockade = The physics rule</strong> that physically prevents two nearby atoms from both entering a high-energy state — mirroring the traffic conflict constraint.</p>
-                </li>
-            </ul>
+            <!-- Core Concepts -->
+            <div class="mb-6">
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-4">Core Concepts</p>
+                <ul class="space-y-4">
+                    <li class="flex items-start space-x-3">
+                        <span class="mt-1 h-5 w-5 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center shrink-0">
+                            <span class="h-2 w-2 rounded-full bg-blue-400"></span>
+                        </span>
+                        <p class="text-slate-300 text-sm leading-relaxed"><strong class="text-slate-100">Nodes:</strong> Intersections that request a green light. Place them by clicking the grid.</p>
+                    </li>
+                    <li class="flex items-start space-x-3">
+                        <span class="mt-1 h-5 w-5 rounded-full bg-rose-500/20 border border-rose-500/40 flex items-center justify-center shrink-0">
+                            <span class="h-2 w-2 rounded-full bg-rose-400"></span>
+                        </span>
+                        <p class="text-slate-300 text-sm leading-relaxed"><strong class="text-slate-100">Conflict Lines:</strong> Roads connecting adjacent intersections that cannot both be green simultaneously.</p>
+                    </li>
+                    <li class="flex items-start space-x-3">
+                        <span class="mt-1 h-5 w-5 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0">
+                            <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+                        </span>
+                        <p class="text-slate-300 text-sm leading-relaxed"><strong class="text-slate-100">Rydberg Blockade:</strong> The physics mechanism that prevents two nearby atoms from entering a high-energy state, effectively modeling the traffic conflict constraint.</p>
+                    </li>
+                </ul>
+            </div>
 
-            <p class="text-slate-500 text-xs mb-6 leading-relaxed">The solver finds the <strong class="text-slate-400">Maximum Independent Set</strong> — the largest group of intersections that can all go green simultaneously without any conflict.</p>
+            <!-- Help hint -->
+            <p class="text-slate-500 text-xs mb-5 leading-relaxed border-t border-slate-800 pt-5">
+                <strong class="text-slate-400">Need help?</strong> Press the <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300 font-mono">?</kbd> button at any time to see these concepts again.
+            </p>
+
+            <!-- Get in touch -->
+            <p class="text-slate-500 text-xs mb-6 leading-relaxed">
+                <strong class="text-slate-400">Get in touch:</strong>
+                GitHub: <a href="https://github.com/mohamed-ah" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 transition-colors">github.com/mohamed-ah</a>
+            </p>
 
             <button id="introDismissBtn" class="w-full py-3.5 rounded-xl font-bold text-base bg-blue-600 hover:bg-blue-500 transition-colors text-white">
                 Got it — Start Building
@@ -86,8 +96,11 @@
         <div class="flex items-center space-x-4 text-base">
             <span class="flex items-center space-x-2.5 px-4 py-2 rounded-full bg-emerald-950/30 border border-emerald-900/50 text-emerald-400">
                 <span class="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span class="font-semibold">Pasqal SA Cloud Online</span>
+                <span class="font-semibold hidden sm:inline">Pasqal SA Cloud Online</span>
             </span>
+            <button id="helpBtn" title="Help" aria-label="Open help" class="h-9 w-9 rounded-full border border-slate-700 bg-slate-900 hover:bg-slate-800 hover:border-slate-600 transition-colors flex items-center justify-center text-slate-400 hover:text-slate-100 font-bold text-base shrink-0">
+                ?
+            </button>
         </div>
     </header>
 
@@ -365,16 +378,29 @@
             lucide.createIcons();
             updateWorkspace();
 
-            // Onboarding overlay — show once per browser
+            // Help modal — show on first visit, re-openable via ? button
             const introOverlay = document.getElementById('introOverlay');
-            if (localStorage.getItem('qt_intro_seen')) {
-                introOverlay.remove();
-            } else {
-                document.getElementById('introDismissBtn').addEventListener('click', () => {
-                    localStorage.setItem('qt_intro_seen', '1');
-                    introOverlay.remove();
-                });
+            const helpBtn = document.getElementById('helpBtn');
+
+            function openHelpModal() {
+                introOverlay.classList.remove('hidden');
             }
+            function closeHelpModal() {
+                introOverlay.classList.add('hidden');
+                localStorage.setItem('qt_intro_seen', '1');
+            }
+
+            if (localStorage.getItem('qt_intro_seen')) {
+                introOverlay.classList.add('hidden');
+            }
+
+            document.getElementById('introDismissBtn').addEventListener('click', closeHelpModal);
+            helpBtn.addEventListener('click', openHelpModal);
+
+            // Close on backdrop click
+            introOverlay.addEventListener('click', (e) => {
+                if (e.target === introOverlay) closeHelpModal();
+            });
 
             // Accordion logic
             document.querySelectorAll('.accordion-btn').forEach(btn => {
