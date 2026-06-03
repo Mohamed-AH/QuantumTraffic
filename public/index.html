@@ -28,8 +28,8 @@
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-blue-500 selection:text-white overflow-y-auto lg:overflow-hidden">
 
     <!-- Help Modal (Onboarding + re-trigger) -->
-    <div id="introOverlay" class="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-6">
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-8 max-w-lg w-full shadow-2xl">
+    <div id="introOverlay" class="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl overflow-y-auto max-h-[90vh]">
 
             <!-- Header -->
             <div class="mb-6">
@@ -80,25 +80,25 @@
     </div>
 
     <!-- Header Navigation -->
-    <header class="border-b border-slate-900 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 px-10 py-5 flex items-center justify-between shrink-0">
-        <div class="flex items-center space-x-6">
-            <div class="h-14 w-14 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
-                <i data-lucide="cpu" class="text-white h-8 w-8"></i>
+    <header class="border-b border-slate-900 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 px-4 sm:px-6 md:px-10 py-3 sm:py-5 flex items-center justify-between shrink-0 gap-3">
+        <div class="flex items-center space-x-3 sm:space-x-6 min-w-0">
+            <div class="h-9 w-9 sm:h-14 sm:w-14 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/20 shrink-0">
+                <i data-lucide="cpu" class="text-white h-5 w-5 sm:h-8 sm:w-8"></i>
             </div>
-            <div>
-                <div class="flex items-center space-x-4">
-                    <h1 class="font-bold text-2xl leading-none tracking-tight">Quantum Traffic Control</h1>
-                    <span class="text-sm font-mono px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-400">v1.3.1-stable</span>
+            <div class="min-w-0">
+                <div class="flex items-center gap-2 sm:gap-4 flex-wrap">
+                    <h1 class="font-bold text-base sm:text-2xl leading-none tracking-tight truncate">Quantum Traffic Control</h1>
+                    <span class="text-xs font-mono px-2 py-0.5 sm:px-2.5 sm:py-1 rounded bg-slate-900 border border-slate-800 text-slate-400 hidden sm:inline">v1.3.1-stable</span>
                 </div>
-                <p class="text-base text-slate-400 mt-2">Smart City Grid Optimization & Rydberg Blockade Solver</p>
+                <p class="text-xs sm:text-base text-slate-400 mt-0.5 sm:mt-2 hidden sm:block">Smart City Grid Optimization & Rydberg Blockade Solver</p>
             </div>
         </div>
-        <div class="flex items-center space-x-4 text-base">
-            <span class="flex items-center space-x-2.5 px-4 py-2 rounded-full bg-emerald-950/30 border border-emerald-900/50 text-emerald-400">
-                <span class="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+        <div class="flex items-center space-x-2 sm:space-x-4 shrink-0">
+            <span class="flex items-center space-x-1.5 sm:space-x-2.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-emerald-950/30 border border-emerald-900/50 text-emerald-400 text-sm">
+                <span class="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
                 <span class="font-semibold hidden sm:inline">Pasqal SA Cloud Online</span>
             </span>
-            <button id="helpBtn" title="Help" aria-label="Open help" class="h-9 w-9 rounded-full border border-slate-700 bg-slate-900 hover:bg-slate-800 hover:border-slate-600 transition-colors flex items-center justify-center text-slate-400 hover:text-slate-100 font-bold text-base shrink-0">
+            <button id="helpBtn" title="Help" aria-label="Open help" class="h-8 w-8 sm:h-9 sm:w-9 rounded-full border border-slate-700 bg-slate-900 hover:bg-slate-800 hover:border-slate-600 transition-colors flex items-center justify-center text-slate-400 hover:text-slate-100 font-bold text-sm sm:text-base shrink-0">
                 ?
             </button>
         </div>
@@ -108,8 +108,8 @@
     <main class="flex-grow w-full px-4 md:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch lg:h-[calc(100vh-130px)] lg:overflow-hidden">
         
         <!-- Left Column: Interactive Sandbox Grid Map (7 Cols) -->
-        <div class="lg:col-span-7 flex flex-col h-full">
-            <div class="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 md:p-8 flex flex-col h-full relative overflow-hidden">
+        <div class="lg:col-span-7 flex flex-col lg:h-full">
+            <div class="bg-slate-900/40 border border-slate-900 rounded-2xl p-4 sm:p-6 md:p-8 flex flex-col lg:h-full relative overflow-hidden">
                 <div class="flex items-center justify-between mb-5 shrink-0">
                     <div>
                         <h2 class="font-bold text-slate-200 text-xl">City Intersection Layout Grid</h2>
@@ -124,7 +124,7 @@
                 </div>
 
                 <!-- Simulation Canvas Area - Flex Grow to occupy maximum screen height -->
-                <div id="canvasContainer" class="relative flex-grow bg-slate-950/90 border border-slate-800 rounded-xl overflow-hidden shadow-inner cursor-crosshair group flex items-center justify-center">
+                <div id="canvasContainer" class="relative flex-grow min-h-[60vw] sm:min-h-[380px] bg-slate-950/90 border border-slate-800 rounded-xl overflow-hidden shadow-inner cursor-crosshair group flex items-center justify-center">
                     
                     <!-- SVG Vector Data Layer -->
                     <svg id="canvasSvg" class="absolute inset-0 w-full h-full"></svg>
@@ -144,29 +144,29 @@
                 </div>
 
                 <!-- Live Reporting Performance Metrics Data Row -->
-                <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-900 text-base shrink-0">
-                    <div class="bg-slate-950/40 p-4 rounded-lg border border-slate-900">
-                        <span class="text-slate-500 font-semibold block mb-1.5">Total Hubs</span>
-                        <span id="statNodes" class="text-xl font-bold text-slate-200 code-font">0</span>
+                <div class="mt-4 sm:mt-6 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 pt-4 sm:pt-6 border-t border-slate-900 shrink-0">
+                    <div class="bg-slate-950/40 p-3 sm:p-4 rounded-lg border border-slate-900">
+                        <span class="text-slate-500 text-xs sm:text-sm font-semibold block mb-1 sm:mb-1.5">Total Hubs</span>
+                        <span id="statNodes" class="text-lg sm:text-xl font-bold text-slate-200 code-font">0</span>
                     </div>
-                    <div class="bg-slate-950/40 p-4 rounded-lg border border-slate-900">
-                        <span class="text-slate-500 font-semibold block mb-1.5">Conflict Paths</span>
-                        <span id="statEdges" class="text-xl font-bold text-rose-500 code-font">0</span>
+                    <div class="bg-slate-950/40 p-3 sm:p-4 rounded-lg border border-slate-900">
+                        <span class="text-slate-500 text-xs sm:text-sm font-semibold block mb-1 sm:mb-1.5">Conflict Paths</span>
+                        <span id="statEdges" class="text-lg sm:text-xl font-bold text-rose-500 code-font">0</span>
                     </div>
-                    <div class="bg-slate-950/40 p-4 rounded-lg border border-slate-900">
-                        <span class="text-slate-500 font-semibold block mb-1.5">Max Independent Set</span>
-                        <span id="statMis" class="text-xl font-bold text-emerald-400 code-font">—</span>
+                    <div class="bg-slate-950/40 p-3 sm:p-4 rounded-lg border border-slate-900">
+                        <span class="text-slate-500 text-xs sm:text-sm font-semibold block mb-1 sm:mb-1.5">Max Indep. Set</span>
+                        <span id="statMis" class="text-lg sm:text-xl font-bold text-emerald-400 code-font">—</span>
                     </div>
-                    <div class="bg-slate-950/40 p-4 rounded-lg border border-slate-900">
-                        <span class="text-slate-500 font-semibold block mb-1.5">Interference Space</span>
-                        <span id="statSpace" class="text-xl font-bold text-slate-400 code-font">0%</span>
+                    <div class="bg-slate-950/40 p-3 sm:p-4 rounded-lg border border-slate-900">
+                        <span class="text-slate-500 text-xs sm:text-sm font-semibold block mb-1 sm:mb-1.5">Interference</span>
+                        <span id="statSpace" class="text-lg sm:text-xl font-bold text-slate-400 code-font">0%</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Right Column: Interactive Control Deck (5 Cols) -->
-        <div class="lg:col-span-5 flex flex-col space-y-6 h-full overflow-y-auto pr-2">
+        <div class="lg:col-span-5 flex flex-col space-y-6 lg:h-full lg:overflow-y-auto lg:pr-2">
             
             <!-- Guided Demo Configuration Deck -->
             <div class="bg-slate-900/60 border border-blue-900/30 rounded-2xl p-6 relative overflow-hidden ring-1 ring-blue-500/10 shrink-0">
@@ -330,7 +330,7 @@
     </main>
 
     <!-- App Bottom Informational Banner Layout -->
-    <footer class="border-t border-slate-900 bg-slate-950 py-6 px-10 text-center text-base text-slate-600 shrink-0">
+    <footer class="border-t border-slate-900 bg-slate-950 py-5 px-4 md:px-10 text-center text-sm sm:text-base text-slate-600 shrink-0">
         <span>Developed for Enterprise Integration Showcase — Powered by Pulser, Pasqal Cloud & Express Architecture</span>
     </footer>
 
