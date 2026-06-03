@@ -4,7 +4,8 @@
   "description": "Enterprise Quantum API Interface & Smart City Grid Optimization Sandbox",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "build": "pip3 install -r requirements.txt"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
