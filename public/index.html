@@ -25,7 +25,59 @@
         }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-blue-500 selection:text-white overflow-hidden">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-blue-500 selection:text-white overflow-y-auto lg:overflow-hidden">
+
+    <!-- Help Modal (Onboarding + re-trigger) -->
+    <div id="introOverlay" class="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-6">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-8 max-w-lg w-full shadow-2xl">
+
+            <!-- Header -->
+            <div class="mb-6">
+                <h2 class="font-bold text-xl text-slate-100 mb-2">Quantum Traffic Control</h2>
+                <p class="text-slate-400 text-sm leading-relaxed">An interactive demo showcasing how Pasqal's quantum computing technology solves complex traffic routing problems. You are building networks that maximize throughput while respecting physical constraints.</p>
+            </div>
+
+            <!-- Core Concepts -->
+            <div class="mb-6">
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-4">Core Concepts</p>
+                <ul class="space-y-4">
+                    <li class="flex items-start space-x-3">
+                        <span class="mt-1 h-5 w-5 rounded-full bg-blue-500/20 border border-blue-500/40 flex items-center justify-center shrink-0">
+                            <span class="h-2 w-2 rounded-full bg-blue-400"></span>
+                        </span>
+                        <p class="text-slate-300 text-sm leading-relaxed"><strong class="text-slate-100">Nodes:</strong> Intersections that request a green light. Place them by clicking the grid.</p>
+                    </li>
+                    <li class="flex items-start space-x-3">
+                        <span class="mt-1 h-5 w-5 rounded-full bg-rose-500/20 border border-rose-500/40 flex items-center justify-center shrink-0">
+                            <span class="h-2 w-2 rounded-full bg-rose-400"></span>
+                        </span>
+                        <p class="text-slate-300 text-sm leading-relaxed"><strong class="text-slate-100">Conflict Lines:</strong> Roads connecting adjacent intersections that cannot both be green simultaneously.</p>
+                    </li>
+                    <li class="flex items-start space-x-3">
+                        <span class="mt-1 h-5 w-5 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shrink-0">
+                            <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+                        </span>
+                        <p class="text-slate-300 text-sm leading-relaxed"><strong class="text-slate-100">Rydberg Blockade:</strong> The physics mechanism that prevents two nearby atoms from entering a high-energy state, effectively modeling the traffic conflict constraint.</p>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Help hint -->
+            <p class="text-slate-500 text-xs mb-5 leading-relaxed border-t border-slate-800 pt-5">
+                <strong class="text-slate-400">Need help?</strong> Press the <kbd class="px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300 font-mono">?</kbd> button at any time to see these concepts again.
+            </p>
+
+            <!-- Get in touch -->
+            <p class="text-slate-500 text-xs mb-6 leading-relaxed">
+                <strong class="text-slate-400">Get in touch:</strong>
+                GitHub: <a href="https://github.com/mohamed-ah" target="_blank" rel="noopener" class="text-blue-400 hover:text-blue-300 transition-colors">github.com/mohamed-ah</a>
+            </p>
+
+            <button id="introDismissBtn" class="w-full py-3.5 rounded-xl font-bold text-base bg-blue-600 hover:bg-blue-500 transition-colors text-white">
+                Got it — Start Building
+            </button>
+        </div>
+    </div>
 
     <!-- Header Navigation -->
     <header class="border-b border-slate-900 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 px-10 py-5 flex items-center justify-between shrink-0">
@@ -44,13 +96,16 @@
         <div class="flex items-center space-x-4 text-base">
             <span class="flex items-center space-x-2.5 px-4 py-2 rounded-full bg-emerald-950/30 border border-emerald-900/50 text-emerald-400">
                 <span class="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span class="font-semibold">Pasqal SA Cloud Online</span>
+                <span class="font-semibold hidden sm:inline">Pasqal SA Cloud Online</span>
             </span>
+            <button id="helpBtn" title="Help" aria-label="Open help" class="h-9 w-9 rounded-full border border-slate-700 bg-slate-900 hover:bg-slate-800 hover:border-slate-600 transition-colors flex items-center justify-center text-slate-400 hover:text-slate-100 font-bold text-base shrink-0">
+                ?
+            </button>
         </div>
     </header>
 
     <!-- Main Workspace Layout - Force full-width and view-height alignment -->
-    <main class="flex-grow w-full px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch h-[calc(100vh-130px)] overflow-hidden">
+    <main class="flex-grow w-full px-4 md:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch lg:h-[calc(100vh-130px)] lg:overflow-hidden">
         
         <!-- Left Column: Interactive Sandbox Grid Map (7 Cols) -->
         <div class="lg:col-span-7 flex flex-col h-full">
@@ -84,8 +139,8 @@
                     </div>
 
                     <!-- Visual Grid Axis Boundaries -->
-                    <span class="absolute bottom-4 left-4 text-sm text-slate-600 code-font select-none font-semibold">[0,0] μm</span>
-                    <span class="absolute top-4 right-4 text-sm text-slate-600 code-font select-none font-semibold">[10,10] μm</span>
+                    <span class="absolute bottom-4 left-4 text-sm text-slate-400 code-font select-none font-semibold">[0,0] μm</span>
+                    <span class="absolute top-4 right-4 text-sm text-slate-400 code-font select-none font-semibold">[10,10] μm</span>
                 </div>
 
                 <!-- Live Reporting Performance Metrics Data Row -->
@@ -153,28 +208,45 @@
                 </div>
             </div>
 
-            <!-- Conceptual Physics Knowledge Hub Card -->
+            <!-- Conceptual Physics Knowledge Hub — Accordion -->
             <div class="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 relative overflow-hidden shrink-0">
-                <div class="flex items-start space-x-4">
+                <div class="flex items-start space-x-4 mb-5">
                     <div class="h-10 w-10 rounded-lg bg-blue-950/60 border border-blue-900/40 flex items-center justify-center text-blue-400 shrink-0">
                         <i data-lucide="book-open" class="h-6 w-6"></i>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-slate-200 text-lg">How This Works Under the Hood</h3>
-                        <p class="text-base text-slate-400 mt-1.5 leading-relaxed">
-                            Each intersection we place acts as a single target **rubidium atom** trapped in space by laser tweezers. 
-                        </p>
-                    </div>
+                    <h3 class="font-bold text-slate-200 text-lg pt-1.5">How This Works Under the Hood</h3>
                 </div>
-                
-                <div class="mt-6 space-y-5 text-base leading-relaxed border-t border-slate-900/60 pt-6">
-                    <div class="flex items-start space-x-3.5">
-                        <span class="bg-slate-950 text-slate-500 h-7 w-7 rounded border border-slate-800 flex items-center justify-center shrink-0 code-font font-semibold">1</span>
-                        <p class="text-slate-400"><strong class="text-slate-200">The Rydberg Blockade:</strong> If two atoms sit too close to each other (closer than a radius of $R_b \approx 4.0\,\mu\text{m}$), we physically cannot pump both of them into their high-energy Rydberg state at the same time. One blocks the other.</p>
+
+                <div class="space-y-2" id="accordionRoot">
+                    <!-- Tab 1 -->
+                    <div class="rounded-xl border border-slate-800 overflow-hidden">
+                        <button class="accordion-btn w-full flex items-center justify-between px-4 py-3 text-left bg-slate-950/60 hover:bg-slate-900 transition-colors" data-target="acc1">
+                            <span class="font-semibold text-sm text-slate-200">The Problem — Traffic Gridlock</span>
+                            <i data-lucide="chevron-down" class="h-4 w-4 text-slate-500 transition-transform duration-200 acc-chevron"></i>
+                        </button>
+                        <div id="acc1" class="hidden px-4 py-4 text-sm text-slate-400 leading-relaxed border-t border-slate-800/60 bg-slate-950/30">
+                            At a busy city grid, you can't let every intersection go green simultaneously — adjacent lights would send cars into each other. The challenge is to find the <strong class="text-slate-300">maximum number of intersections</strong> that can all be green at the same time, with zero conflicts. Mathematically this is the <em>Maximum Independent Set</em> (MIS) problem, which is NP-hard on classical computers — it explodes in difficulty as the city grows.
+                        </div>
                     </div>
-                    <div class="flex items-start space-x-3.5">
-                        <span class="bg-slate-950 text-slate-500 h-7 w-7 rounded border border-slate-800 flex items-center justify-center shrink-0 code-font font-semibold">2</span>
-                        <p class="text-slate-400"><strong class="text-slate-200">Solving Combinatorics:</strong> By letting the collective atoms find their lowest overall physical energy level (their Ground State), the system automatically optimizes the Maximum Independent Set. It maximizes active lights with zero traffic collisions!</p>
+                    <!-- Tab 2 -->
+                    <div class="rounded-xl border border-slate-800 overflow-hidden">
+                        <button class="accordion-btn w-full flex items-center justify-between px-4 py-3 text-left bg-slate-950/60 hover:bg-slate-900 transition-colors" data-target="acc2">
+                            <span class="font-semibold text-sm text-slate-200">The Physics — Laser-Trapped Atoms</span>
+                            <i data-lucide="chevron-down" class="h-4 w-4 text-slate-500 transition-transform duration-200 acc-chevron"></i>
+                        </button>
+                        <div id="acc2" class="hidden px-4 py-4 text-sm text-slate-400 leading-relaxed border-t border-slate-800/60 bg-slate-950/30">
+                            Each intersection is mapped to a single <strong class="text-slate-300">rubidium atom</strong> held in place by an optical tweezer laser. When we fire a carefully shaped laser pulse (an <em>adiabatic sweep</em>), nearby atoms experience the <strong class="text-slate-300">Rydberg Blockade</strong>: if two atoms sit within ~4.0 µm of each other, exciting one physically prevents the other from also becoming excited. The system evolves to its lowest-energy ground state, and that state naturally encodes the MIS solution as a pattern of excited (green = 1) and ground-state (red = 0) atoms.
+                        </div>
+                    </div>
+                    <!-- Tab 3 -->
+                    <div class="rounded-xl border border-slate-800 overflow-hidden">
+                        <button class="accordion-btn w-full flex items-center justify-between px-4 py-3 text-left bg-slate-950/60 hover:bg-slate-900 transition-colors" data-target="acc3">
+                            <span class="font-semibold text-sm text-slate-200">The Results — Reading the Bitstring</span>
+                            <i data-lucide="chevron-down" class="h-4 w-4 text-slate-500 transition-transform duration-200 acc-chevron"></i>
+                        </button>
+                        <div id="acc3" class="hidden px-4 py-4 text-sm text-slate-400 leading-relaxed border-t border-slate-800/60 bg-slate-950/30">
+                            After 500 measurements, the quantum device returns a probability distribution of bitstrings like <code class="text-emerald-400 bg-slate-900 px-1 rounded">1010</code>. Each digit maps to one node: <strong class="text-slate-300">1 = Green Light</strong>, <strong class="text-slate-300">0 = Red Light</strong>. The most frequently occurring valid bitstring is the hardware's best answer to "which intersections can all go green safely?" — shown highlighted on the grid above.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -305,6 +377,42 @@
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             updateWorkspace();
+
+            // Help modal — show on first visit, re-openable via ? button
+            const introOverlay = document.getElementById('introOverlay');
+            const helpBtn = document.getElementById('helpBtn');
+
+            function openHelpModal() {
+                introOverlay.classList.remove('hidden');
+            }
+            function closeHelpModal() {
+                introOverlay.classList.add('hidden');
+                localStorage.setItem('qt_intro_seen', '1');
+            }
+
+            if (localStorage.getItem('qt_intro_seen')) {
+                introOverlay.classList.add('hidden');
+            }
+
+            document.getElementById('introDismissBtn').addEventListener('click', closeHelpModal);
+            helpBtn.addEventListener('click', openHelpModal);
+
+            // Close on backdrop click
+            introOverlay.addEventListener('click', (e) => {
+                if (e.target === introOverlay) closeHelpModal();
+            });
+
+            // Accordion logic
+            document.querySelectorAll('.accordion-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetId = btn.getAttribute('data-target');
+                    const panel = document.getElementById(targetId);
+                    const chevron = btn.querySelector('.acc-chevron');
+                    const isOpen = !panel.classList.contains('hidden');
+                    panel.classList.toggle('hidden', isOpen);
+                    chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+                });
+            });
         });
 
         function setEngine(engine) {
@@ -324,27 +432,31 @@
         engineClassical.addEventListener('click', () => setEngine('classical'));
         engineQuantum.addEventListener('click', () => setEngine('quantum'));
 
-        canvasContainer.addEventListener('click', (e) => {
+        function placeNodeFromPixel(clientX, clientY) {
             if (state.nodes.length >= 12) return;
-
             const rect = canvasContainer.getBoundingClientRect();
-            const pxX = e.clientX - rect.left;
-            const pxY = e.clientY - rect.top;
-
-            // Robust dynamic padding boundaries for large-node layout optimization
+            const pxX = clientX - rect.left;
+            const pxY = clientY - rect.top;
             const padding = 54;
             const renderWidth = rect.width - (padding * 2);
             const renderHeight = rect.height - (padding * 2);
-
             let x = ((pxX - padding) / renderWidth) * 10;
             let y = (1 - ((pxY - padding) / renderHeight)) * 10;
-
             x = Math.max(0, Math.min(10, parseFloat(x.toFixed(2))));
             y = Math.max(0, Math.min(10, parseFloat(y.toFixed(2))));
-
             state.nodes.push([x, y]);
             updateWorkspace();
+        }
+
+        canvasContainer.addEventListener('click', (e) => {
+            placeNodeFromPixel(e.clientX, e.clientY);
         });
+
+        canvasContainer.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            placeNodeFromPixel(touch.clientX, touch.clientY);
+        }, { passive: false });
 
         clearBtn.addEventListener('click', () => {
             state.nodes = [];
@@ -615,9 +727,9 @@
 
             resultsBars.innerHTML = `
                 <div class="space-y-3">
-                    <div class="flex justify-between text-base mb-2">
-                        <span class="code-font text-emerald-400 font-bold text-lg">${solutionString}</span>
-                        <span class="text-slate-400">Optimal (100% Certainty)</span>
+                    <div class="flex justify-between items-center mb-3 py-1">
+                        <span class="code-font text-emerald-400 font-bold text-xl">${solutionString}</span>
+                        <span class="text-slate-400 text-sm">Optimal (100% Certainty)</span>
                     </div>
                     <div class="h-4 w-full bg-slate-900 rounded-full overflow-hidden">
                         <div class="h-full bg-emerald-500 rounded-full" style="width: 100%"></div>
@@ -725,11 +837,11 @@
             results.forEach((res, idx) => {
                 const pct = (res.probability * 100).toFixed(1);
                 const barRow = document.createElement('div');
-                barRow.className = "space-y-2 cursor-pointer hover:bg-slate-900/40 p-2.5 rounded transition-all";
+                barRow.className = "space-y-2 cursor-pointer hover:bg-slate-900/40 p-3 rounded-lg transition-all";
                 barRow.innerHTML = `
-                    <div class="flex justify-between text-base mb-1.5">
-                        <span class="code-font ${idx === 0 ? 'text-emerald-400 font-bold text-lg' : 'text-slate-400'}">${res.bitstring}</span>
-                        <span class="text-slate-500 text-xs">Prob: ${pct}% (${res.occurrences} shots)</span>
+                    <div class="flex justify-between items-center mb-2 py-0.5">
+                        <span class="code-font ${idx === 0 ? 'text-emerald-400 font-bold text-xl' : 'text-slate-400 text-base'}">${res.bitstring}</span>
+                        <span class="text-slate-500 text-sm">Prob: ${pct}% (${res.occurrences} shots)</span>
                     </div>
                     <div class="h-3 w-full bg-slate-900 rounded-full overflow-hidden">
                         <div class="h-full ${idx === 0 ? 'bg-emerald-500' : 'bg-slate-700'} rounded-full" style="width: ${pct}%"></div>

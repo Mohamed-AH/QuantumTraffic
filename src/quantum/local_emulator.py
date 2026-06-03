@@ -7,8 +7,11 @@ from pulser.waveforms import RampWaveform, BlackmanWaveform
 from pulser_simulation import QutipEmulator
 
 def run_local_simulation(coordinates):
-    # Construct coordinate dictionary mapping indexes to numpy arrays
-    coords_dict = {f"Node_{i}": np.array(c) for i, c in enumerate(coordinates)}
+    # Scale coordinates up so the physical blockade radius matches the 4.0 µm visual grid.
+    # Without scaling, the low peak-Ω pulse produces ~6.5 µm blockade, causing
+    # classical and quantum results to diverge on identical layouts.
+    scale_factor = 1.5
+    coords_dict = {f"Node_{i}": np.array(c) * scale_factor for i, c in enumerate(coordinates)}
     reg = Register(coords_dict)
     
     # Declare the sequence on the MockDevice using a global Rydberg channel
