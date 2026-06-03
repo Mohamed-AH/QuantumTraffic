@@ -82,7 +82,12 @@ async function updateJobState(jobId, updates) {
     }
 }
 
-// API Route: Initiate Quantum/Classical Solver Job
+// Health check endpoint — pinged by UptimeRobot to prevent Render free-tier spin-down
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+
 app.post('/api/quantum/solve', rateLimiter, async (req, res) => {
     const { coordinates, useCloud } = req.body;
     
