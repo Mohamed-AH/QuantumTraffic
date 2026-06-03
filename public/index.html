@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Traffic Control — Interactive Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .code-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .pulse-glow {
+            animation: pulse-glow-animation 2s infinite alternate;
+        }
+        @keyframes pulse-glow-animation {
+            0% { box-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+            100% { box-shadow: 0 0 32px rgba(59, 130, 246, 0.8); }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-blue-500 selection:text-white overflow-hidden">
+
+    <!-- Header Navigation -->
+    <header class="border-b border-slate-900 bg-slate-950/80 backdrop-blur-md sticky top-0 z-50 px-10 py-5 flex items-center justify-between shrink-0">
+        <div class="flex items-center space-x-6">
+            <div class="h-14 w-14 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                <i data-lucide="cpu" class="text-white h-8 w-8"></i>
+            </div>
+            <div>
+                <div class="flex items-center space-x-4">
+                    <h1 class="font-bold text-2xl leading-none tracking-tight">Quantum Traffic Control</h1>
+                    <span class="text-sm font-mono px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-400">v1.3.1-stable</span>
+                </div>
+                <p class="text-base text-slate-400 mt-2">Smart City Grid Optimization & Rydberg Blockade Solver</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4 text-base">
+            <span class="flex items-center space-x-2.5 px-4 py-2 rounded-full bg-emerald-950/30 border border-emerald-900/50 text-emerald-400">
+                <span class="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="font-semibold">Pasqal SA Cloud Online</span>
+            </span>
+        </div>
+    </header>
+
+    <!-- Main Workspace Layout - Force full-width and view-height alignment -->
+    <main class="flex-grow w-full px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch h-[calc(100vh-130px)] overflow-hidden">
+        
+        <!-- Left Column: Interactive Sandbox Grid Map (7 Cols) -->
+        <div class="lg:col-span-7 flex flex-col h-full">
+            <div class="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 md:p-8 flex flex-col h-full relative overflow-hidden">
+                <div class="flex items-center justify-between mb-5 shrink-0">
+                    <div>
+                        <h2 class="font-bold text-slate-200 text-xl">City Intersection Layout Grid</h2>
+                        <p class="text-base text-slate-400 mt-1">Click directly inside the map grid to deploy traffic light hubs. Max 12 nodes.</p>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button id="clearBtn" class="text-base px-5 py-2.5 rounded-lg border border-slate-800 hover:bg-slate-800 text-slate-400 transition-colors flex items-center space-x-2.5">
+                            <i data-lucide="trash" class="h-5 w-5"></i>
+                            <span class="font-semibold">Reset Map</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Simulation Canvas Area - Flex Grow to occupy maximum screen height -->
+                <div id="canvasContainer" class="relative flex-grow bg-slate-950/90 border border-slate-800 rounded-xl overflow-hidden shadow-inner cursor-crosshair group flex items-center justify-center">
+                    
+                    <!-- SVG Vector Data Layer -->
+                    <svg id="canvasSvg" class="absolute inset-0 w-full h-full"></svg>
+                    
+                    <!-- Sandbox Helper Entry Prompt -->
+                    <div id="gridPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-10 pointer-events-none select-none transition-opacity duration-300">
+                        <div class="h-16 w-16 rounded-full border border-dashed border-slate-700 flex items-center justify-center text-slate-500 mb-5">
+                            <i data-lucide="map-pin" class="h-8 w-8"></i>
+                        </div>
+                        <h3 class="font-semibold text-slate-300 text-xl">Interactive Sandbox City Map</h3>
+                        <p class="text-base text-slate-500 max-w-lg mt-3 leading-relaxed">Tap anywhere to place communication hubs. We connect nodes that sit within 4.0 μm (Rydberg Blockade radius).</p>
+                    </div>
+
+                    <!-- Visual Grid Axis Boundaries -->
+                    <span class="absolute bottom-4 left-4 text-sm text-slate-600 code-font select-none font-semibold">[0,0] μm</span>
+                    <span class="absolute top-4 right-4 text-sm text-slate-600 code-font select-none font-semibold">[10,10] μm</span>
+                </div>
+
+                <!-- Live Reporting Performance Metrics Data Row -->
+                <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 border-t border-slate-900 text-base shrink-0">
+                    <div class="bg-slate-950/40 p-4 rounded-lg border border-slate-900">
+                        <span class="text-slate-500 font-semibold block mb-1.5">Total Hubs</span>
+                        <span id="statNodes" class="text-xl font-bold text-slate-200 code-font">0</span>
+                    </div>
+                    <div class="bg-slate-950/40 p-4 rounded-lg border border-slate-900">
+                        <span class="text-slate-500 font-semibold block mb-1.5">Conflict Paths</span>
+                        <span id="statEdges" class="text-xl font-bold text-rose-500 code-font">0</span>
+                    </div>
+                    <div class="bg-slate-950/40 p-4 rounded-lg border border-slate-900">
+                        <span class="text-slate-500 font-semibold block mb-1.5">Max Independent Set</span>
+                        <span id="statMis" class="text-xl font-bold text-emerald-400 code-font">—</span>
+                    </div>
+                    <div class="bg-slate-950/40 p-4 rounded-lg border border-slate-900">
+                        <span class="text-slate-500 font-semibold block mb-1.5">Interference Space</span>
+                        <span id="statSpace" class="text-xl font-bold text-slate-400 code-font">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Interactive Control Deck (5 Cols) -->
+        <div class="lg:col-span-5 flex flex-col space-y-6 h-full overflow-y-auto pr-2">
+            
+            <!-- Guided Demo Configuration Deck -->
+            <div class="bg-slate-900/60 border border-blue-900/30 rounded-2xl p-6 relative overflow-hidden ring-1 ring-blue-500/10 shrink-0">
+                <div class="flex items-start space-x-4 mb-6">
+                    <div class="h-10 w-10 rounded-lg bg-blue-950/80 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0">
+                        <i data-lucide="compass" class="h-6 w-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-200 text-lg">Interactive Demo Tours</h3>
+                        <p class="text-base text-slate-400 mt-1.5 leading-relaxed">Select a preset to automatically populate the grid and show the quantum concepts.</p>
+                    </div>
+                </div>
+                
+                <!-- Tour Action Grid Array -->
+                <div class="grid grid-cols-3 gap-4">
+                    <button id="tourCorridorBtn" class="py-4 px-3 text-xs md:text-base font-bold rounded-lg bg-slate-950 border border-slate-800 hover:border-blue-500/50 hover:bg-slate-900/50 transition-all text-slate-300">
+                        1. Corridor
+                    </button>
+                    <button id="tourCrossroadBtn" class="py-4 px-3 text-xs md:text-base font-bold rounded-lg bg-slate-950 border border-slate-800 hover:border-blue-500/50 hover:bg-slate-900/50 transition-all text-slate-300">
+                        2. Crossroad
+                    </button>
+                    <button id="tourFrustratedBtn" class="py-4 px-3 text-xs md:text-base font-bold rounded-lg bg-slate-950 border border-slate-800 hover:border-blue-500/50 hover:bg-slate-900/50 transition-all text-slate-300">
+                        3. Triangle
+                    </button>
+                </div>
+
+                <!-- Guided Narrative Companion Guide Display -->
+                <div id="tourGuideCard" class="hidden mt-6 p-5 rounded-xl bg-blue-950/10 border border-blue-900/20 text-base">
+                    <div class="flex items-center justify-between text-blue-400 font-bold mb-3 uppercase tracking-wider text-sm">
+                        <span>Guided Tour Insights</span>
+                        <button id="closeTourBtn" class="text-slate-400 hover:text-white"><i data-lucide="x" class="h-5 w-5"></i></button>
+                    </div>
+                    <p id="tourTitle" class="font-bold text-slate-200 text-base mb-2">Scenario Title</p>
+                    <p id="tourExplanation" class="text-slate-400 text-base leading-relaxed mb-4">Explanation block detailing physics mechanics.</p>
+                    <div class="bg-slate-950/80 p-4 rounded-lg border border-slate-900 code-font text-slate-300 text-sm leading-relaxed">
+                        <strong class="text-slate-300 block mb-2 uppercase text-xs tracking-wide">Suggested Presentation Narrative:</strong>
+                        <span id="tourScript">Script narrative.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conceptual Physics Knowledge Hub Card -->
+            <div class="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 relative overflow-hidden shrink-0">
+                <div class="flex items-start space-x-4">
+                    <div class="h-10 w-10 rounded-lg bg-blue-950/60 border border-blue-900/40 flex items-center justify-center text-blue-400 shrink-0">
+                        <i data-lucide="book-open" class="h-6 w-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-200 text-lg">How This Works Under the Hood</h3>
+                        <p class="text-base text-slate-400 mt-1.5 leading-relaxed">
+                            Each intersection we place acts as a single target **rubidium atom** trapped in space by laser tweezers. 
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="mt-6 space-y-5 text-base leading-relaxed border-t border-slate-900/60 pt-6">
+                    <div class="flex items-start space-x-3.5">
+                        <span class="bg-slate-950 text-slate-500 h-7 w-7 rounded border border-slate-800 flex items-center justify-center shrink-0 code-font font-semibold">1</span>
+                        <p class="text-slate-400"><strong class="text-slate-200">The Rydberg Blockade:</strong> If two atoms sit too close to each other (closer than a radius of $R_b \approx 4.0\,\mu\text{m}$), we physically cannot pump both of them into their high-energy Rydberg state at the same time. One blocks the other.</p>
+                    </div>
+                    <div class="flex items-start space-x-3.5">
+                        <span class="bg-slate-950 text-slate-500 h-7 w-7 rounded border border-slate-800 flex items-center justify-center shrink-0 code-font font-semibold">2</span>
+                        <p class="text-slate-400"><strong class="text-slate-200">Solving Combinatorics:</strong> By letting the collective atoms find their lowest overall physical energy level (their Ground State), the system automatically optimizes the Maximum Independent Set. It maximizes active lights with zero traffic collisions!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Optimization Compute Selection Interface Panel -->
+            <div class="bg-slate-900/40 border border-slate-900 rounded-2xl p-6 space-y-6 flex-grow flex flex-col justify-between">
+                <div class="space-y-5">
+                    <h3 class="font-bold text-slate-200 text-lg">Compute Engine Panel</h3>
+                    
+                    <!-- Engine Selector Toggle Layout -->
+                    <div class="grid grid-cols-2 gap-4 bg-slate-950 p-2.5 rounded-xl border border-slate-900">
+                        <button id="engineClassical" class="flex items-center justify-center space-x-2.5 py-3.5 rounded-lg text-base font-bold bg-slate-900 border border-slate-800 text-slate-200 transition-all">
+                            <i data-lucide="terminal" class="h-5 w-5 text-slate-400"></i>
+                            <span>Classical Solver</span>
+                        </button>
+                        <button id="engineQuantum" class="flex items-center justify-center space-x-2.5 py-3.5 rounded-lg text-base font-bold text-slate-400 hover:text-slate-200 transition-all">
+                            <i data-lucide="satellite" class="h-5 w-5"></i>
+                            <span>Pasqal Cloud (SA)</span>
+                        </button>
+                    </div>
+
+                    <!-- Engine Subtext Structural Context Description -->
+                    <div id="engineDescription" class="text-base text-slate-400 bg-slate-950/40 p-4.5 rounded-lg border border-slate-900/60 leading-relaxed">
+                        Runs a local, brute-force graph search inside the web browser. Fast for 2-8 nodes, but scales exponentially (O(2^N)), which quickly overwhelms standard CPUs as intersections increase.
+                    </div>
+                </div>
+
+                <div class="space-y-6 mt-6">
+                    <!-- Execution Optimization Trigger Mechanism Button -->
+                    <button id="solveBtn" disabled class="w-full py-4.5 px-6 rounded-xl font-bold text-lg bg-blue-600 hover:bg-blue-500 disabled:bg-slate-900 disabled:text-slate-600 disabled:cursor-not-allowed transition-all text-white flex items-center justify-center space-x-3">
+                        <i data-lucide="play" class="h-6 w-6"></i>
+                        <span>Execute Traffic Optimization</span>
+                    </button>
+                    
+                    <!-- Async Pipeline Tracker Loop Progression Display -->
+                    <div id="pipelineTracker" class="hidden space-y-4 bg-slate-950 p-6 rounded-xl border border-slate-900">
+                        <div class="flex items-center justify-between">
+                            <span class="text-base font-bold text-slate-400">Quantum Pipeline Sequence</span>
+                            <span id="pipelineStatusBadge" class="text-sm font-mono px-3 py-1.5 rounded-full bg-blue-950 text-blue-400 border border-blue-900/40">INITIALIZING</span>
+                        </div>
+                        
+                        <div class="space-y-4 text-base text-slate-500 border-t border-slate-900/60 pt-4">
+                            <div id="step1" class="flex items-center space-x-3">
+                                <span class="h-2.5 w-2.5 rounded-full bg-slate-700 shrink-0"></span>
+                                <span>Mapping visual coordinates to atom register</span>
+                            </div>
+                            <div id="step2" class="flex items-center space-x-3">
+                                <span class="h-2.5 w-2.5 rounded-full bg-slate-700 shrink-0"></span>
+                                <span>Authenticating with Pasqal SA Identity Gate</span>
+                            </div>
+                            <div id="step3" class="flex items-center space-x-3">
+                                <span class="h-2.5 w-2.5 rounded-full bg-slate-700 shrink-0"></span>
+                                <span>Executing rydberg analog laser pulse configuration</span>
+                            </div>
+                            <div id="step4" class="flex items-center space-x-3">
+                                <span class="h-2.5 w-2.5 rounded-full bg-slate-700 shrink-0"></span>
+                                <span>Downloading bitstring measurement state vectors</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Results Output Visualizer Chart Area -->
+                    <div id="resultsPanel" class="hidden bg-slate-950 p-6 rounded-xl border border-slate-900 space-y-6">
+                        <div class="flex items-center justify-between border-b border-slate-900 pb-4">
+                            <span class="text-base font-bold text-slate-400 uppercase tracking-wider">Optimization Solution Set</span>
+                            <span id="resultsBackendLabel" class="text-sm code-font text-slate-500">LOCAL</span>
+                        </div>
+
+                        <!-- Dynamic Probabilistic Bars Container -->
+                        <div id="resultsBars" class="space-y-5">
+                            <!-- Content Injected via Script Operations -->
+                        </div>
+
+                        <p class="text-sm leading-relaxed text-slate-400 mt-3.5">
+                            The top-performing solution string highlights the maximum collection of safe intersections. Green dots are safe to run, while gray/dimmed dots are locked out to protect traffic flow.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- App Bottom Informational Banner Layout -->
+    <footer class="border-t border-slate-900 bg-slate-950 py-6 px-10 text-center text-base text-slate-600 shrink-0">
+        <span>Developed for Enterprise Integration Showcase — Powered by Pulser, Pasqal Cloud & Express Architecture</span>
+    </footer>
+
+    <!-- Interactive Execution Logic Script File -->
+    <script>
+        const state = {
+            nodes: [], 
+            selectedEngine: 'classical', 
+            blockadeRadius: 4.0, 
+            activeJobId: null,
+            pollInterval: null
+        };
+
+        const canvasSvg = document.getElementById('canvasSvg');
+        const canvasContainer = document.getElementById('canvasContainer');
+        const gridPlaceholder = document.getElementById('gridPlaceholder');
+        const clearBtn = document.getElementById('clearBtn');
+        const solveBtn = document.getElementById('solveBtn');
+        
+        const statNodes = document.getElementById('statNodes');
+        const statEdges = document.getElementById('statEdges');
+        const statMis = document.getElementById('statMis');
+        const statSpace = document.getElementById('statSpace');
+
+        const engineClassical = document.getElementById('engineClassical');
+        const engineQuantum = document.getElementById('engineQuantum');
+        const engineDescription = document.getElementById('engineDescription');
+        
+        const pipelineTracker = document.getElementById('pipelineTracker');
+        const pipelineStatusBadge = document.getElementById('pipelineStatusBadge');
+        const resultsPanel = document.getElementById('resultsPanel');
+        const resultsBars = document.getElementById('resultsBars');
+        const resultsBackendLabel = document.getElementById('resultsBackendLabel');
+
+        const tourCorridorBtn = document.getElementById('tourCorridorBtn');
+        const tourCrossroadBtn = document.getElementById('tourCrossroadBtn');
+        const tourFrustratedBtn = document.getElementById('tourFrustratedBtn');
+        const tourGuideCard = document.getElementById('tourGuideCard');
+        const tourTitle = document.getElementById('tourTitle');
+        const tourExplanation = document.getElementById('tourExplanation');
+        const tourScript = document.getElementById('tourScript');
+        const closeTourBtn = document.getElementById('closeTourBtn');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            updateWorkspace();
+        });
+
+        function setEngine(engine) {
+            state.selectedEngine = engine;
+            if (engine === 'classical') {
+                engineClassical.className = "flex items-center justify-center space-x-2 py-3 rounded-lg text-base font-semibold bg-slate-900 border border-slate-800 text-slate-200 transition-all";
+                engineQuantum.className = "flex items-center justify-center space-x-2 py-3 rounded-lg text-base font-semibold text-slate-400 hover:text-slate-200 transition-all";
+                engineDescription.innerText = "Runs a local, brute-force graph search inside the web browser. Fast for 2-8 nodes, but scales exponentially (O(2^N)), which quickly overwhelms standard CPUs as intersections increase.";
+            } else {
+                engineQuantum.className = "flex items-center justify-center space-x-2 py-3 rounded-lg text-base font-semibold bg-slate-900 border border-slate-800 text-slate-200 transition-all";
+                engineClassical.className = "flex items-center justify-center space-x-2 py-3 rounded-lg text-base font-semibold text-slate-400 hover:text-slate-200 transition-all";
+                engineDescription.innerText = "Dispatches the physical coordinate payload straight to Pasqal's remote SA Cloud regional scheduler to be evaluated via analog Rydberg blockade execution loops.";
+            }
+            resetResults();
+        }
+
+        engineClassical.addEventListener('click', () => setEngine('classical'));
+        engineQuantum.addEventListener('click', () => setEngine('quantum'));
+
+        canvasContainer.addEventListener('click', (e) => {
+            if (state.nodes.length >= 12) return;
+
+            const rect = canvasContainer.getBoundingClientRect();
+            const pxX = e.clientX - rect.left;
+            const pxY = e.clientY - rect.top;
+
+            // Robust dynamic padding boundaries for large-node layout optimization
+            const padding = 54;
+            const renderWidth = rect.width - (padding * 2);
+            const renderHeight = rect.height - (padding * 2);
+
+            let x = ((pxX - padding) / renderWidth) * 10;
+            let y = (1 - ((pxY - padding) / renderHeight)) * 10;
+
+            x = Math.max(0, Math.min(10, parseFloat(x.toFixed(2))));
+            y = Math.max(0, Math.min(10, parseFloat(y.toFixed(2))));
+
+            state.nodes.push([x, y]);
+            updateWorkspace();
+        });
+
+        clearBtn.addEventListener('click', () => {
+            state.nodes = [];
+            resetResults();
+            updateWorkspace();
+        });
+
+        function updateWorkspace() {
+            drawGrid();
+
+            if (state.nodes.length > 0) {
+                gridPlaceholder.classList.add('opacity-0');
+                solveBtn.removeAttribute('disabled');
+            } else {
+                gridPlaceholder.classList.remove('opacity-0');
+                solveBtn.setAttribute('disabled', 'true');
+            }
+
+            const edges = calculateEdges();
+            statNodes.innerText = state.nodes.length;
+            statEdges.innerText = edges.length;
+            
+            const totalSquareUnits = 100;
+            const totalInteractionCovered = state.nodes.length * (Math.PI * Math.pow(state.blockadeRadius, 2));
+            const spacePercent = Math.min(100, Math.round((totalInteractionCovered / totalSquareUnits) * 100));
+            statSpace.innerText = `${spacePercent}%`;
+        }
+
+        function getDistance(nodeA, nodeB) {
+            return Math.sqrt(Math.pow(nodeA[0] - nodeB[0], 2) + Math.pow(nodeA[1] - nodeB[1], 2));
+        }
+
+        function calculateEdges() {
+            const edges = [];
+            for (let i = 0; i < state.nodes.length; i++) {
+                for (let j = i + 1; j < state.nodes.length; j++) {
+                    const dist = getDistance(state.nodes[i], state.nodes[j]);
+                    if (dist < state.blockadeRadius) {
+                        edges.push([i, j]);
+                    }
+                }
+            }
+            return edges;
+        }
+
+        function drawGrid(highlightSet = null) {
+            canvasSvg.innerHTML = '';
+            
+            const width = canvasContainer.clientWidth || canvasContainer.getBoundingClientRect().width;
+            const height = canvasContainer.clientHeight || canvasContainer.getBoundingClientRect().height;
+
+            // Expanded margin padding safety zone for maximum node render scaling (increased to 54)
+            const padding = 54;
+            const renderWidth = width - (padding * 2);
+            const renderHeight = height - (padding * 2);
+
+            const toPixels = (x, y) => {
+                const pxX = padding + (x / 10) * renderWidth;
+                const pxY = padding + (1 - (y / 10)) * renderHeight;
+                return { x: pxX, y: pxY };
+            };
+
+            // Render SVG dynamic background grid lines matching padded coordinates
+            for (let i = 0; i <= 10; i++) {
+                const pStartV = toPixels(i, 0);
+                const pEndV = toPixels(i, 10);
+                const lineV = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                lineV.setAttribute("x1", pStartV.x);
+                lineV.setAttribute("y1", pStartV.y);
+                lineV.setAttribute("x2", pEndV.x);
+                lineV.setAttribute("y2", pEndV.y);
+                lineV.setAttribute("class", "stroke-slate-800/40 stroke-[1.5]");
+                canvasSvg.appendChild(lineV);
+
+                const pStartH = toPixels(0, i);
+                const pEndH = toPixels(10, i);
+                const lineH = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                lineH.setAttribute("x1", pStartH.x);
+                lineH.setAttribute("y1", pStartH.y);
+                lineH.setAttribute("x2", pEndH.x);
+                lineH.setAttribute("y2", pEndH.y);
+                lineH.setAttribute("class", "stroke-slate-800/40 stroke-[1.5]");
+                canvasSvg.appendChild(lineH);
+            }
+
+            const edges = calculateEdges();
+
+            // 1. Draw Conflict Lines
+            edges.forEach(([i, j]) => {
+                const p1 = toPixels(...state.nodes[i]);
+                const p2 = toPixels(...state.nodes[j]);
+
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("x1", p1.x);
+                line.setAttribute("y1", p1.y);
+                line.setAttribute("x2", p2.x);
+                line.setAttribute("y2", p2.y);
+                line.setAttribute("class", "stroke-rose-500/60 stroke-[2.5]");
+                line.setAttribute("stroke-dasharray", "5,5");
+                canvasSvg.appendChild(line);
+            });
+
+            // 2. Draw Interaction Fields and Target Nodes
+            state.nodes.forEach((node, idx) => {
+                const p = toPixels(...node);
+                
+                const circleRadius = (state.blockadeRadius / 10) * renderWidth;
+                const radCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                radCircle.setAttribute("cx", p.x);
+                radCircle.setAttribute("cy", p.y);
+                radCircle.setAttribute("r", circleRadius);
+                radCircle.setAttribute("class", "fill-blue-500/5 stroke-blue-500/25 stroke-[1.5]");
+                canvasSvg.appendChild(radCircle);
+
+                const nodeDot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                nodeDot.setAttribute("cx", p.x);
+                nodeDot.setAttribute("cy", p.y);
+                nodeDot.setAttribute("r", 15); // Robust node circle radius
+                
+                if (highlightSet) {
+                    if (highlightSet[idx] === '1') {
+                        nodeDot.setAttribute("class", "fill-emerald-500 stroke-emerald-400 stroke-[2.5] drop-shadow-[0_0_12px_rgba(16,185,129,0.7)] cursor-pointer");
+                    } else {
+                        nodeDot.setAttribute("class", "fill-slate-800 stroke-slate-700 stroke-1.5 opacity-40 cursor-pointer");
+                    }
+                } else {
+                    nodeDot.setAttribute("class", "fill-blue-500 stroke-white stroke-[2] hover:scale-115 transition-transform duration-150 cursor-pointer");
+                }
+                
+                const title = document.createElementNS("http://www.w3.org/2000/svg", "title");
+                title.textContent = `Intersection ${idx}: [${node[0]}, ${node[1]}] μm`;
+                nodeDot.appendChild(title);
+                canvasSvg.appendChild(nodeDot);
+
+                const textLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                textLabel.setAttribute("x", p.x);
+                textLabel.setAttribute("y", p.y + 5); // Balanced vertical offset for the larger text layout
+                textLabel.setAttribute("text-anchor", "middle");
+                textLabel.setAttribute("class", "fill-slate-950 font-bold text-sm select-none pointer-events-none");
+                textLabel.textContent = idx;
+                canvasSvg.appendChild(textLabel);
+            });
+        }
+
+        function resetResults() {
+            pipelineTracker.classList.add('hidden');
+            resultsPanel.classList.add('hidden');
+            statMis.innerText = "—";
+            drawGrid();
+        }
+
+        // ==========================================
+        // SCENARIOS PRESET TOUR LAYOUT MANAGEMENT
+        // ==========================================
+        const tours = {
+            corridor: {
+                title: "1. The Alternating Corridor (Basic Blockade)",
+                engine: "classical",
+                explanation: "We place 4 nodes in a line with 2.6 micrometer spacing intervals. This puts adjacent hubs in conflict while leaving next-nearest nodes isolated.",
+                script: "An independent set sequence optimization isolates a maximum collection size of 2 active nodes. Running the execution forces alternating structures to resolve.",
+                // Mapped safely inward using the expanded padding calculations to sit beautifully inside boundaries
+                nodes: [[1.5, 5.0], [4.0, 5.0], [6.5, 5.0], [9.0, 5.0]]
+            },
+            crossroad: {
+                title: "2. The Symmetrical Crossroad (Quantum Degeneracy)",
+                engine: "quantum",
+                explanation: "We construct a symmetrical 3.0 x 3.0 micrometer square framework configuration setup.",
+                script: "Because the square is fully uniform, there are two distinct valid independent answers (1001 and 0110). Our hardware solver captures a beautiful probability distribution split.",
+                nodes: [[3.5, 3.5], [3.5, 6.5], [6.5, 3.5], [6.5, 6.5]]
+            },
+            frustrated: {
+                title: "3. The Frustrated System (MUTUAL CONFLICT)",
+                engine: "classical",
+                explanation: "We construct an equilateral triangle loop configuration pattern.",
+                script: "Because all points sit within 3.0 micrometers of each other, activating any pair triggers an immediate conflict. The system allows only a single active hub.",
+                nodes: [[3.5, 3.5], [6.5, 3.5], [5.0, 6.1]]
+            }
+        };
+
+        function startTour(tourKey) {
+            const tour = tours[tourKey];
+            state.nodes = [];
+            resetResults();
+            updateWorkspace();
+            
+            tourTitle.innerText = tour.title;
+            tourExplanation.innerText = tour.explanation;
+            tourScript.innerText = tour.script;
+            tourGuideCard.classList.remove('hidden');
+
+            setEngine(tour.engine);
+
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < tour.nodes.length) {
+                    state.nodes.push(tour.nodes[i]);
+                    updateWorkspace();
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    solveBtn.classList.add('pulse-glow');
+                    setTimeout(() => solveBtn.classList.remove('pulse-glow'), 3000);
+                }
+            }, 150);
+        }
+
+        tourCorridorBtn.addEventListener('click', () => startTour('corridor'));
+        tourCrossroadBtn.addEventListener('click', () => startTour('crossroad'));
+        tourFrustratedBtn.addEventListener('click', () => startTour('frustrated'));
+        closeTourBtn.addEventListener('click', () => tourGuideCard.classList.add('hidden'));
+
+        solveBtn.addEventListener('click', async () => {
+            resetResults();
+            if (state.selectedEngine === 'classical') {
+                runClassicalSolver();
+            } else {
+                runQuantumSolver();
+            }
+        });
+
+        function runClassicalSolver() {
+            const startTime = performance.now();
+            const n = state.nodes.length;
+            const edges = calculateEdges();
+            
+            const adj = Array.from({ length: n }, () => []);
+            edges.forEach(([u, v]) => {
+                adj[u].push(v);
+                adj[v].push(u);
+            });
+
+            let bestSet = [];
+            
+            function backtrack(idx, currentSet) {
+                if (idx === n) {
+                    if (currentSet.length > bestSet.length) {
+                        bestSet = [...currentSet];
+                    }
+                    return;
+                }
+
+                let canInclude = true;
+                for (const node of currentSet) {
+                    if (adj[idx].includes(node)) {
+                        canInclude = false;
+                        break;
+                    }
+                }
+
+                if (canInclude) {
+                    backtrack(idx + 1, [...currentSet, idx]);
+                }
+                backtrack(idx + 1, currentSet);
+            }
+
+            backtrack(0, []);
+
+            let solutionString = "";
+            for (let i = 0; i < n; i++) {
+                solutionString += bestSet.includes(i) ? "1" : "0";
+            }
+
+            const durationMs = (performance.now() - startTime).toFixed(1);
+
+            statMis.innerText = `${bestSet.length} Hubs`;
+            resultsBackendLabel.innerText = `CLASSICAL SOLVER (${durationMs}ms)`;
+            resultsPanel.classList.remove('hidden');
+
+            resultsBars.innerHTML = `
+                <div class="space-y-3">
+                    <div class="flex justify-between text-base mb-2">
+                        <span class="code-font text-emerald-400 font-bold text-lg">${solutionString}</span>
+                        <span class="text-slate-400">Optimal (100% Certainty)</span>
+                    </div>
+                    <div class="h-4 w-full bg-slate-900 rounded-full overflow-hidden">
+                        <div class="h-full bg-emerald-500 rounded-full" style="width: 100%"></div>
+                    </div>
+                </div>
+            `;
+
+            drawGrid(solutionString);
+        }
+
+        async function runQuantumSolver() {
+            pipelineTracker.classList.remove('hidden');
+            updatePipelineSteps(1);
+
+            try {
+                const response = await fetch('/api/quantum/solve', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        coordinates: state.nodes,
+                        useCloud: true
+                    })
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.error || "Internal execution dispatch failure.");
+
+                state.activeJobId = data.jobId;
+                updatePipelineSteps(2);
+                state.pollInterval = setInterval(pollJobStatus, 2000);
+
+            } catch (err) {
+                stopPipelineWithError(err.message);
+            }
+        }
+
+        async function pollJobStatus() {
+            if (!state.activeJobId) return;
+
+            try {
+                const response = await fetch(`/api/quantum/jobs/${state.activeJobId}`);
+                const job = await response.json();
+
+                if (!response.ok) throw new Error(job.error || "Failed to poll active database reference.");
+
+                if (job.status === "processing") {
+                    updatePipelineSteps(3);
+                } else if (job.status === "completed") {
+                    clearInterval(state.pollInterval);
+                    updatePipelineSteps(4);
+                    setTimeout(() => renderQuantumResults(job.results), 800);
+                } else if (job.status === "failed") {
+                    throw new Error(job.error || "Remote execution failed.");
+                }
+
+            } catch (err) {
+                clearInterval(state.pollInterval);
+                stopPipelineWithError(err.message);
+            }
+        }
+
+        function updatePipelineSteps(currentStep) {
+            const steps = ['step1', 'step2', 'step3', 'step4'];
+            pipelineStatusBadge.innerText = ["INITIALIZING", "CONNECTING", "SAMPLING", "DOWNLOADING"][currentStep - 1];
+
+            steps.forEach((id, idx) => {
+                const element = document.getElementById(id);
+                const dot = element.querySelector('span');
+                
+                if (idx + 1 < currentStep) {
+                    element.className = "flex items-center space-x-3.5 text-emerald-400 font-semibold";
+                    dot.className = "h-3 w-3 rounded-full bg-emerald-400 shrink-0";
+                } else if (idx + 1 === currentStep) {
+                    element.className = "flex items-center space-x-3.5 text-blue-400 font-semibold animate-pulse";
+                    dot.className = "h-3 w-3 rounded-full bg-blue-500 shrink-0";
+                } else {
+                    element.className = "flex items-center space-x-3.5 text-slate-600";
+                    dot.className = "h-3 w-3 rounded-full bg-slate-800 shrink-0";
+                }
+            });
+        }
+
+        function stopPipelineWithError(errorMsg) {
+            pipelineStatusBadge.innerText = "FAILED";
+            pipelineStatusBadge.className = "text-sm font-mono px-3 py-1.5 rounded-full bg-rose-950 text-rose-400 border border-rose-900/40";
+            resultsBars.innerHTML = `<div class="p-5 bg-rose-950/20 border border-rose-900/40 rounded-lg text-rose-400 text-base"><strong>Error:</strong> ${errorMsg}</div>`;
+            resultsPanel.classList.remove('hidden');
+        }
+
+        function renderQuantumResults(results) {
+            pipelineTracker.classList.add('hidden');
+            resultsPanel.classList.remove('hidden');
+            resultsBackendLabel.innerText = "PASQAL EMU_FREE CLUSTER";
+
+            if (!results || results.length === 0) {
+                resultsBars.innerHTML = `<span class="text-base text-slate-500">No outcomes found.</span>`;
+                return;
+            }
+
+            const bestResult = results[0];
+            const activeHubsCount = (bestResult.bitstring.match(/1/g) || []).length;
+            statMis.innerText = `${activeHubsCount} Hubs`;
+
+            resultsBars.innerHTML = '';
+            results.forEach((res, idx) => {
+                const pct = (res.probability * 100).toFixed(1);
+                const barRow = document.createElement('div');
+                barRow.className = "space-y-2 cursor-pointer hover:bg-slate-900/40 p-2.5 rounded transition-all";
+                barRow.innerHTML = `
+                    <div class="flex justify-between text-base mb-1.5">
+                        <span class="code-font ${idx === 0 ? 'text-emerald-400 font-bold text-lg' : 'text-slate-400'}">${res.bitstring}</span>
+                        <span class="text-slate-500 text-xs">Prob: ${pct}% (${res.occurrences} shots)</span>
+                    </div>
+                    <div class="h-3 w-full bg-slate-900 rounded-full overflow-hidden">
+                        <div class="h-full ${idx === 0 ? 'bg-emerald-500' : 'bg-slate-700'} rounded-full" style="width: ${pct}%"></div>
+                    </div>
+                `;
+                barRow.addEventListener('click', () => drawGrid(res.bitstring));
+                resultsBars.appendChild(barRow);
+            });
+
+            drawGrid(bestResult.bitstring);
+        }
+
+        window.addEventListener('resize', updateWorkspace);
+    </script>
+</body>
+</html>
