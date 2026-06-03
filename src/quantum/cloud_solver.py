@@ -17,8 +17,11 @@ def run_cloud(coordinates):
     if not username or not project_id or not password:
         raise ValueError("Missing PASQAL_USERNAME, PASQAL_PASSWORD, or PASQAL_PROJECT_ID configuration environment values.")
 
-    # Map layout coordinates into an atom register
-    coords_dict = {f"Node_{i}": np.array(c) for i, c in enumerate(coordinates)}
+    # Scale coordinates up so the physical blockade radius matches the 4.0 µm visual grid.
+    # Without scaling, the low peak-Ω pulse produces ~6.5 µm blockade, causing
+    # classical and quantum results to diverge on identical layouts.
+    scale_factor = 1.5
+    coords_dict = {f"Node_{i}": np.array(c) * scale_factor for i, c in enumerate(coordinates)}
     reg = Register(coords_dict)
     
     # Construct the pulse sequence

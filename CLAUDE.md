@@ -14,10 +14,9 @@
 
 ## Project State
 
-**As of: 2026-06-03 — Session 1 (Planning)**
+**As of: 2026-06-03 — Session 2 (Implementation)**
 
-- Codebase reviewed and understood end-to-end.
-- No code changes made yet.
+- All 6 planned steps implemented.
 - Branch: `claude/busy-rubin-q1wjA`
 
 ### Current Known Issues
@@ -123,12 +122,12 @@ Replace `spawn('python3')` with an HTTP call to a local FastAPI worker that pre-
 
 | # | Task | Priority | Status |
 |---|------|----------|--------|
-| 1 | Fix blockade radius physics bug (scale_factor in both .py files) | CRITICAL | ⬜ Not started |
-| 2 | Fix accessibility contrast on axis labels | HIGH | ⬜ Not started |
-| 3 | Add onboarding Quick Start overlay | HIGH | ⬜ Not started |
-| 4 | Make layout mobile-friendly + add touch handlers | HIGH | ⬜ Not started |
-| 5 | Improve results panel typography/padding | MEDIUM | ⬜ Not started |
-| 6 | Refactor "How This Works" card to accordion | MEDIUM | ⬜ Not started |
+| 1 | Fix blockade radius physics bug (scale_factor in both .py files) | CRITICAL | ✅ Done |
+| 2 | Fix accessibility contrast on axis labels | HIGH | ✅ Done |
+| 3 | Add onboarding Quick Start overlay | HIGH | ✅ Done |
+| 4 | Make layout mobile-friendly + add touch handlers | HIGH | ✅ Done |
+| 5 | Improve results panel typography/padding | MEDIUM | ✅ Done |
+| 6 | Refactor "How This Works" card to accordion | MEDIUM | ✅ Done |
 | 7 | (Future) FastAPI worker queue to replace subprocess spawn | LOW | 🔵 Backlog |
 
 ---
